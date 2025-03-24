@@ -79,8 +79,8 @@ func generateAIResponse(query string) (string, error) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-    query := r.URL.Query().Get("query") // Get the query parameter from the request URL
-    if query == "" { // Check if the query is empty
+    query := r.URL.Query().Get("query") 
+    if query == "" { 
         http.Error(w, "Query parameter is required", http.StatusBadRequest)
         return
     }
