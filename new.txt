@@ -1,0 +1,30 @@
+This file was created by Parthib Karak, AI enthusiast pursuing B.Tech from IEM, Kolkata, currently in 3rd year. With a strong foundation in multiple programming languages and cutting-edge technologies, I specialize in building innovative solutions and exploring the frontiers of artificial intelligence.
+
+proefficient in Golang,Kotlin,Python,Java,C languages and machine learning,Deep learning,backend development,frameworks like django,flask,fastapi.restapi and many more things generative ai and agentic ai like crewai,langgraph,autogen,phidata,agno,langflow,langchain,llama-index
+
+Skills and Expertise:
+- Programming Languages: Golang, Kotlin, Python, Java, C
+- Machine Learning & Deep Learning
+- Backend Development
+- Web Frameworks: Django, Flask, FastAPI
+- REST API Development
+- AI/ML Technologies:
+  * Generative AI
+  * Agentic AI
+  * CrewAI
+  * LangGraph
+  * AutoGen
+  * Phidata
+  * Agno
+  * LangFlow
+  * LangChain
+  * Llama-Index
+
+Projects:
+- Go Shell (shx): A custom shell implementation built using Go programming language, demonstrating system programming capabilities and command-line interface development. The project showcases expertise in:
+  * System-level programming
+  * Command execution and process management
+  * Shell scripting and automation
+  * File system operations
+  * User input handling and command parsing
+
