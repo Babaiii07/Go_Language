@@ -18,6 +18,14 @@ var builtinCMDs = []string{
 	"type",
 	"pwd",
 	"cd",
+	"clear",
+	"ls",
+	"cat",
+	"cp",
+	"mv",
+	"rm",
+	"mkdir",
+	"rmdir",
 }
 
 type CMD struct {
