@@ -55,11 +55,19 @@ func main() {
 		}
 
 		builtins := map[string]func([]string){
-			"exit": exitHandler,
-			"echo": echoHandler,
-			"type": typeHandler,
-			"pwd":  pwdHandler,
-			"cd":   cdHandler,
+			"exit":  exitHandler,
+			"echo":  echoHandler,
+			"type":  typeHandler,
+			"pwd":   pwdHandler,
+			"cd":    cdHandler,
+			"clear": clearHandler,
+			"ls":    lsHandler,
+			"cat":   catHandler,
+			"cp":    cpHandler,
+			"mv":    mvHandler,
+			"rm":    rmHandler,
+			"mkdir": mkdirHandler,
+			"rmdir": rmdirHandler,
 		}
 
 		if handler, exists := builtins[fields[0]]; exists {
@@ -94,10 +102,10 @@ func readInputWithAutocomplete(rd *os.File) string {
 		}
 
 		switch rn {
-		case '\x03': 
+		case '\x03':
 			term.Restore(int(rd.Fd()), oldState)
 			os.Exit(0)
-		case '\r', '\n': 
+		case '\r', '\n':
 			fmt.Fprint(os.Stdout, "\r\n")
 
 			tabPressCount = 0
@@ -172,7 +180,6 @@ func autocomplete(prefix string, tabCount int) (string, []string) {
 		}
 	}
 
-
 	if len(matches) == 0 {
 		pathEnv := os.Getenv("PATH")
 		dirs := append([]string{"."}, strings.Split(pathEnv, ":")...)
@@ -183,12 +190,12 @@ func autocomplete(prefix string, tabCount int) (string, []string) {
 				continue
 			}
 			for _, file := range files {
-			
+
 				if file.IsDir() {
 					continue
 				}
 				name := file.Name()
-			
+
 				if strings.HasPrefix(name, prefix) && name != prefix {
 					if !found[name] {
 						found[name] = true
@@ -208,7 +215,6 @@ func autocomplete(prefix string, tabCount int) (string, []string) {
 	if len(matches) == 1 {
 		return strings.TrimPrefix(matches[0], prefix), matches
 	}
-
 
 	lcp := longestCommonPrefix(matches)
 	if len(lcp) > len(prefix) {
@@ -508,5 +514,124 @@ func cdHandler(args []string) {
 
 	if err := os.Chdir(dir); err != nil {
 		fmt.Printf("cd: %s: No such file or directory\n", dir)
+	}
+}
+
+func clearHandler(args []string) {
+	cmd := exec.Command("cmd", "/c", "cls")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
+}
+
+func lsHandler(args []string) {
+	dir := "."
+	if len(args) > 1 {
+		dir = args[1]
+	}
+
+	files, err := os.ReadDir(dir)
+	if err != nil {
+		fmt.Printf("ls: cannot access '%s': %v\n", dir, err)
+		return
+	}
+
+	for _, file := range files {
+		fmt.Println(file.Name())
+	}
+}
+
+func catHandler(args []string) {
+	if len(args) < 2 {
+		fmt.Println("cat: missing file operand")
+		return
+	}
+
+	for _, file := range args[1:] {
+		content, err := os.ReadFile(file)
+		if err != nil {
+			fmt.Printf("cat: %s: %v\n", file, err)
+			continue
+		}
+		fmt.Print(string(content))
+	}
+}
+
+func cpHandler(args []string) {
+	if len(args) < 3 {
+		fmt.Println("cp: missing file operand")
+		return
+	}
+
+	src := args[1]
+	dst := args[2]
+
+	srcFile, err := os.ReadFile(src)
+	if err != nil {
+		fmt.Printf("cp: cannot stat '%s': %v\n", src, err)
+		return
+	}
+
+	err = os.WriteFile(dst, srcFile, 0644)
+	if err != nil {
+		fmt.Printf("cp: cannot create '%s': %v\n", dst, err)
+		return
+	}
+}
+
+func mvHandler(args []string) {
+	if len(args) < 3 {
+		fmt.Println("mv: missing file operand")
+		return
+	}
+
+	src := args[1]
+	dst := args[2]
+
+	err := os.Rename(src, dst)
+	if err != nil {
+		fmt.Printf("mv: cannot move '%s' to '%s': %v\n", src, dst, err)
+		return
+	}
+}
+
+func rmHandler(args []string) {
+	if len(args) < 2 {
+		fmt.Println("rm: missing operand")
+		return
+	}
+
+	for _, file := range args[1:] {
+		err := os.Remove(file)
+		if err != nil {
+			fmt.Printf("rm: cannot remove '%s': %v\n", file, err)
+		}
+	}
+}
+
+func mkdirHandler(args []string) {
+	if len(args) < 2 {
+		fmt.Println("mkdir: missing operand")
+		return
+	}
+
+	for _, dir := range args[1:] {
+		err := os.MkdirAll(dir, 0755)
+		if err != nil {
+			fmt.Printf("mkdir: cannot create directory '%s': %v\n", dir, err)
+		}
+	}
+}
+
+func rmdirHandler(args []string) {
+	if len(args) < 2 {
+		fmt.Println("rmdir: missing operand")
+		return
+	}
+
+	for _, dir := range args[1:] {
+		err := os.Remove(dir)
+		if err != nil {
+			fmt.Printf("rmdir: failed to remove '%s': %v\n", dir, err)
+		}
 	}
 }
