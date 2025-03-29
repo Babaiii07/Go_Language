@@ -79,22 +79,21 @@ func generateAIResponse(query string) (string, error) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-    query := r.URL.Query().Get("query") 
-    if query == "" { 
-        http.Error(w, "Query parameter is required", http.StatusBadRequest)
-        return
-    }
+	query := r.URL.Query().Get("query")
+	if query == "" {
+		http.Error(w, "Query parameter is required", http.StatusBadRequest)
+		return
+	}
 
-    response, err := generateAIResponse(query)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
+	response, err := generateAIResponse(query)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(map[string]string{"response": response})
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"response": response})
 }
-
 
 func main() {
 	http.HandleFunc("/ask", handler)
